@@ -1,0 +1,60 @@
+{% extends 'planner/base.html' %}
+
+{% block title %}Удаление элемента контента - Контент Планнер{% endblock %}
+
+{% block content %}
+<div class="py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card content-card" data-aos="fade">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i> Подтверждение удаления
+                    </h5>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <i class="fas fa-trash-alt fa-4x text-danger mb-4 opacity-75"></i>
+                    
+                    <h4 class="mb-3">Вы уверены, что хотите удалить элемент контента?</h4>
+                    <p class="mb-4 text-secondary">
+                        Вы собираетесь удалить элемент "<strong>{{ item.title }}</strong>" из плана 
+                        "<strong>{{ item.content_plan.title }}</strong>". 
+                        Это действие нельзя будет отменить.
+                    </p>
+                    
+                    <div class="card mb-4 p-3 text-start">
+                        <div class="row g-0">
+                            {% if item.image %}
+                            <div class="col-md-3">
+                                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-fluid rounded">
+                            </div>
+                            {% endif %}
+                            <div class="{% if item.image %}col-md-9{% else %}col-12{% endif %}">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-2">{{ item.title }}</h5>
+                                    <p class="text-secondary small mb-2">
+                                        <i class="far fa-calendar-alt me-1"></i> {{ item.scheduled_date|date:"d.m.Y H:i" }}
+                                    </p>
+                                    <p class="card-text">{{ item.content|truncatechars:150 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center">
+                        <a href="{% url 'content_plan_detail' pk=item.content_plan.pk %}" class="btn btn-outline-secondary me-3">
+                            <i class="fas fa-arrow-left me-2"></i> Отмена
+                        </a>
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-2"></i> Удалить элемент
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Контент Планнер{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #6B7280;
+            --success: #059669;
+            --danger: #DC2626;
+            --warning: #F59E0B;
+            --info: #0891B2;
+            --light: #F3F4F6;
+            --dark: #1F2937;
+            --background: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+            --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --box-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background);
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            padding: 0.8rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+        
+        .bg-primary {
+            background-color: var(--primary) !important;
+        }
+        
+        .content-card {
+            box-shadow: var(--box-shadow);
+            border-radius: var(--border-radius);
+            border: none;
+            background-color: var(--card-bg);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .quick-action {
+            background-color: var(--light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            transition: var(--transition);
+            text-align: center;
+            height: 100%;
+        }
+        
+        .quick-action:hover {
+            background-color: rgba(79, 70, 229, 0.08);
+            transform: translateY(-5px);
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem 0;
+        }
+        
+        .footer {
+            margin-top: auto;
+            padding: 1.5rem 0;
+            background-color: var(--dark);
+            color: #fff;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-calendar-alt me-2"></i> Контент Планнер
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'content_plan_list' %}active{% endif %}" href="{% url 'content_plan_list' %}">
+                            <i class="fas fa-list me-1"></i> Мои планы
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'content_calendar' %}active{% endif %}" href="{% url 'content_calendar' %}">
+                            <i class="fas fa-calendar me-1"></i> Календарь
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'categories_list' %}active{% endif %}" href="{% url 'categories_list' %}">
+                            <i class="fas fa-tags me-1"></i> Категории
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'user_profile' %}">
+                            <i class="fas fa-user me-1"></i> {{ user.username }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt me-1"></i> Выход
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="fas fa-sign-in-alt me-1"></i> Вход
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3" role="alert" data-aos="fade">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p class="mb-0">&copy; {% now "Y" %} Контент Планнер. Все права защищены.</p>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                once: true,
+                offset: 20,
+                duration: 400,
+                easing: 'ease-out',
+                delay: 0,
+                disable: window.innerWidth < 768
+            });
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

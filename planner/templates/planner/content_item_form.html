@@ -1,0 +1,159 @@
+{% extends 'planner/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    {% if is_create %}Новый элемент контента{% else %}Редактирование элемента{% endif %} - Контент Планнер
+{% endblock %}
+
+{% block content %}
+<div class="py-4">
+    <!-- Заголовок страницы -->
+    <div class="mb-4">
+        <h1 class="fw-bold mb-2">
+            {% if is_create %}
+                <i class="fas fa-plus-circle me-2 text-primary"></i> Новый элемент контента
+            {% else %}
+                <i class="fas fa-edit me-2 text-primary"></i> Редактирование элемента
+            {% endif %}
+        </h1>
+        <p class="text-secondary mb-0">
+            План: <a href="{% url 'content_plan_detail' pk=plan.pk %}" class="text-primary fw-medium">{{ plan.title }}</a>
+        </p>
+    </div>
+    
+    <div class="row">
+        <!-- Левая колонка с формой -->
+        <div class="col-lg-8">
+            <!-- Форма элемента контента -->
+            <div class="card content-card" data-aos="fade">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-alt me-2"></i> 
+                        {% if is_create %}Информация о новом элементе{% else %}Редактирование элемента{% endif %}
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Заголовок -->
+                        <div class="mb-4">
+                            <label for="{{ form.title.id_for_label }}" class="form-label fw-medium">
+                                {{ form.title.label }}
+                            </label>
+                            {% render_field form.title class="form-control" placeholder="Введите заголовок элемента контента" %}
+                            {% if form.title.errors %}
+                                <div class="text-danger small mt-1">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Содержание -->
+                        <div class="mb-4">
+                            <label for="{{ form.content.id_for_label }}" class="form-label fw-medium">
+                                {{ form.content.label }}
+                            </label>
+                            {% render_field form.content class="form-control" rows="6" placeholder="Введите содержание элемента контента" %}
+                            {% if form.content.errors %}
+                                <div class="text-danger small mt-1">{{ form.content.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Категория и статус -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.category.id_for_label }}" class="form-label fw-medium">
+                                    {{ form.category.label }}
+                                </label>
+                                {% render_field form.category class="form-select" %}
+                                {% if form.category.errors %}
+                                    <div class="text-danger small mt-1">{{ form.category.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.status.id_for_label }}" class="form-label fw-medium">
+                                    {{ form.status.label }}
+                                </label>
+                                {% render_field form.status class="form-select" %}
+                                {% if form.status.errors %}
+                                    <div class="text-danger small mt-1">{{ form.status.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Дата публикации -->
+                        <div class="mb-4">
+                            <label for="{{ form.scheduled_date.id_for_label }}" class="form-label fw-medium">
+                                {{ form.scheduled_date.label }}
+                            </label>
+                            {% render_field form.scheduled_date type="datetime-local" class="form-control" %}
+                            {% if form.scheduled_date.errors %}
+                                <div class="text-danger small mt-1">{{ form.scheduled_date.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Изображение -->
+                        <div class="mb-4">
+                            <label for="{{ form.image.id_for_label }}" class="form-label fw-medium">
+                                {{ form.image.label }}
+                            </label>
+                            {% if item and item.image %}
+                                <div class="mb-2">
+                                    <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-thumbnail" style="max-height: 150px;">
+                                </div>
+                            {% endif %}
+                            {% render_field form.image class="form-control" %}
+                            {% if form.image.errors %}
+                                <div class="text-danger small mt-1">{{ form.image.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Кнопки действий -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'content_plan_detail' pk=plan.pk %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i> Назад к плану
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i> 
+                                {% if is_create %}Сохранить элемент{% else %}Обновить элемент{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Правая колонка с информацией -->
+        <div class="col-lg-4">
+            {% if not is_create and item %}
+            <div class="card content-card" data-aos="fade">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i> Информация о элементе
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <div class="p-3 border rounded-3">
+                            <div class="small text-secondary">Дата создания</div>
+                            <div>{{ item.created_at|date:"d.m.Y H:i" }}</div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="p-3 border rounded-3">
+                            <div class="small text-secondary">Последнее обновление</div>
+                            <div>{{ item.updated_at|date:"d.m.Y H:i" }}</div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="p-3 border rounded-3">
+                            <div class="small text-secondary">Создатель</div>
+                            <div>{{ plan.owner.username }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

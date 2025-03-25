@@ -1,0 +1,168 @@
+{% extends 'planner/base.html' %}
+
+{% block title %}Главная панель - Контент Планнер{% endblock %}
+
+{% block content %}
+<div class="py-4">
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div data-aos="fade">
+                <h1 class="fw-bold mb-1">
+                    <i class="fas fa-tachometer-alt me-2 text-primary"></i> Панель управления
+                </h1>
+                <p class="text-secondary mb-0">Добро пожаловать, {{ user.username }}! Обзор вашего контента.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="row">
+                <div class="col-12 mb-4">
+                    <div class="card content-card" data-aos="fade">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-history me-2"></i> Недавние планы
+                                </h5>
+                                <a href="{% url 'content_plan_list' %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-list me-1"></i> Все планы
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            {% if recent_plans %}
+                            <div class="list-group">
+                                {% for plan in recent_plans %}
+                                    <a href="{% url 'content_plan_detail' pk=plan.pk %}" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1 fw-bold">{{ plan.title }}</h5>
+                                            <small class="text-secondary">
+                                                <i class="far fa-clock me-1"></i> {{ plan.updated_at|date:"d.m.Y" }}
+                                            </small>
+                                        </div>
+                                        {% if plan.description %}
+                                            <p class="mb-1 text-secondary text-truncate">{{ plan.description }}</p>
+                                        {% endif %}
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-primary fw-medium">
+                                                <i class="fas fa-layer-group me-1"></i> 
+                                                {{ plan.content_items.count }} элементов
+                                            </small>
+                                            <span class="badge bg-light text-primary rounded-pill">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </span>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-clipboard-list fa-3x text-secondary mb-3 opacity-50"></i>
+                                <h5 class="mb-2">У вас пока нет планов контента</h5>
+                                <p class="text-secondary mb-3">Создайте свой первый план контента</p>
+                                <a href="{% url 'content_plan_create' %}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i> Создать план
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12">
+                    <div class="card content-card" data-aos="fade">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-clock me-2"></i> Предстоящие публикации
+                                </h5>
+                                <a href="{% url 'content_calendar' %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-calendar me-1"></i> Календарь
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            {% if upcoming_items %}
+                            <div class="list-group">
+                                {% for item in upcoming_items %}
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="mb-0 fw-semibold">{{ item.title }}</h6>
+                                            <span class="badge {% if item.status == 'scheduled' %}bg-warning{% elif item.status == 'published' %}bg-success{% else %}bg-secondary{% endif %} status-badge">
+                                                {{ item.get_status_display }}
+                                            </span>
+                                        </div>
+                                        <small class="text-secondary d-block mb-2">
+                                            <i class="far fa-clock me-1"></i> {{ item.scheduled_date|date:"d.m.Y H:i" }}
+                                        </small>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-primary fw-medium">{{ item.content_plan.title }}</small>
+                                            <a href="{% url 'content_item_edit' pk=item.pk %}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-edit me-1"></i> Редактировать
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="text-center py-5">
+                                <i class="far fa-calendar-times fa-3x text-secondary mb-3 opacity-50"></i>
+                                <h5 class="mb-2">Нет предстоящих публикаций</h5>
+                                <p class="text-secondary mb-3">Добавьте элементы контента с датой публикации</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card content-card" data-aos="fade">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i> Быстрые действия
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6 col-6">
+                            <a href="{% url 'content_plan_create' %}" class="text-decoration-none">
+                                <div class="quick-action">
+                                    <i class="fas fa-plus-circle text-primary"></i>
+                                    <h6>Новый план</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-6">
+                            <a href="{% url 'categories_list' %}" class="text-decoration-none">
+                                <div class="quick-action">
+                                    <i class="fas fa-tags text-success"></i>
+                                    <h6>Категории</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-6">
+                            <a href="{% url 'content_calendar' %}" class="text-decoration-none">
+                                <div class="quick-action">
+                                    <i class="fas fa-calendar text-info"></i>
+                                    <h6>Календарь</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-6">
+                            <a href="{% url 'content_plan_list' %}" class="text-decoration-none">
+                                <div class="quick-action">
+                                    <i class="fas fa-th-list text-warning"></i>
+                                    <h6>Все планы</h6>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

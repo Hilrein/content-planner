@@ -1,0 +1,93 @@
+{% extends 'planner/base.html' %}
+
+{% block title %}Главная - Контент Планнер{% endblock %}
+
+{% block content %}
+<div class="py-4">
+    <div class="row min-vh-75 align-items-center">
+        <div class="col-lg-7 pe-lg-5" data-aos="fade">
+            <h1 class="display-4 fw-bold mb-4">Планировщик контента</h1>
+            <p class="lead mb-4 text-secondary">
+                Создавайте, планируйте и отслеживайте весь процесс создания контента.
+            </p>
+            
+            <div class="mb-5">
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-2 shadow">
+                    <i class="fas fa-sign-in-alt me-2"></i> Войти
+                </a>
+            </div>
+            
+            <div class="d-flex flex-wrap gap-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle text-success me-2"></i> Календарное планирование
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle text-success me-2"></i> Категоризация контента
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle text-success me-2"></i> Отслеживание статусов
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 d-none d-lg-block" data-aos="fade">
+            <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80" 
+                 alt="Планирование контента" class="img-fluid rounded shadow">
+        </div>
+    </div>
+    
+    <div class="row mt-5 pt-5" id="features">        
+        <div class="col-md-4 mb-4" data-aos="fade">
+            <div class="card content-card h-100 feature-card">
+                <div class="card-body p-5 text-center">
+                    <div class="feature-icon mx-auto">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="h4 mb-3">Календарное планирование</h3>
+                    <p class="text-secondary mb-0">Календарь</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4" data-aos="fade">
+            <div class="card content-card h-100 feature-card">
+                <div class="card-body p-5 text-center">
+                    <div class="feature-icon mx-auto">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h3 class="h4 mb-3">Отслеживание статусов</h3>
+                    <p class="text-secondary mb-0">Отслеживание статусов</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4" data-aos="fade">
+            <div class="card content-card h-100 feature-card">
+                <div class="card-body p-5 text-center">
+                    <div class="feature-icon mx-auto">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3 class="h4 mb-3">Категоризация</h3>
+                    <p class="text-secondary mb-0">Создание категорий</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+    <div class="row mt-5 text-center">
+        <div class="col-12" data-aos="fade">
+            <div class="card content-card p-5 bg-primary text-white">
+                <h2 class="fw-bold mb-4">Готовы упорядочить свой контент?</h2>
+                <p class="lead mb-4 mx-auto" style="max-width: 700px;">
+                    Начните использовать планировщик контента сегодня и превратите
+                </p>
+                <div class="mt-2">
+                    <a href="{% url 'login' %}" class="btn btn-light btn-lg px-5">
+                        <i class="fas fa-sign-in-alt me-2"></i> Начать бесплатно
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

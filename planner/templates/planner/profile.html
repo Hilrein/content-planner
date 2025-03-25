@@ -1,0 +1,168 @@
+{% extends 'planner/base.html' %}
+
+{% block title %}Профиль - Контент Планнер{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="py-4">
+    <div class="mb-4">
+        <h1 class="fw-bold mb-1">
+            <i class="fas fa-user-circle me-2 text-primary"></i> Профиль пользователя
+        </h1>
+        <p class="text-secondary mb-0">Управление личной информацией и настройками</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-3">
+                        <i class="fas fa-info-circle me-2 text-primary"></i> Информация о пользователе
+                    </h5>
+                    <div class="text-center mb-4">
+                        {% if user.profile.profile_image %}
+                            <div class="mb-3">
+                                <img src="{{ user.profile.profile_image.url }}" alt="{{ user.username }}" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
+                            </div>
+                        {% else %}
+                            <div class="d-inline-flex justify-content-center align-items-center bg-light rounded-circle" style="width: 120px; height: 120px;">
+                                <span class="text-primary" style="font-size: 48px; font-weight: 500;">{{ user.username|slice:":1"|upper }}</span>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="mt-3">
+                            <form method="post" enctype="multipart/form-data" id="image-form">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="{{ image_form.profile_image.id_for_label }}" class="form-label">Изменить фото</label>
+                                    {% render_field image_form.profile_image class="form-control form-control-sm" %}
+                                    {% if image_form.profile_image.errors %}
+                                        <div class="text-danger small mt-1">{{ image_form.profile_image.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-upload me-1"></i> Загрузить фото
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <h4 class="my-3">{{ user.username }}</h4>
+                    </div>
+                    
+                    <div>
+                        <div class="row mb-3">
+                            <div class="col-5 text-secondary">Имя пользователя:</div>
+                            <div class="col-7">{{ user.username }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-5 text-secondary">Дата регистрации:</div>
+                            <div class="col-7">{{ user.date_joined|date:"d.m.Y" }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-5 text-secondary">Последний вход:</div>
+                            <div class="col-7">{{ user.last_login|date:"d.m.Y H:i" }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-5 text-secondary">Статус:</div>
+                            <div class="col-7">
+                                {% if user.is_active %}
+                                    <span class="text-success">Активен</span>
+                                {% else %}
+                                    <span class="text-danger">Не активен</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="mb-4">
+                        <i class="fas fa-edit me-2 text-primary"></i> Редактирование профиля
+                    </h5>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">Имя</label>
+                                {% render_field form.first_name class="form-control" placeholder="Введите ваше имя" %}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger small mt-1">{{ form.first_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Фамилия</label>
+                                {% render_field form.last_name class="form-control" placeholder="Введите вашу фамилию" %}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger small mt-1">{{ form.last_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                            {% render_field form.email class="form-control" placeholder="Введите ваш email" %}
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-1">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <hr class="my-4">
+                        <h5 class="mb-3">Изменение пароля</h5>
+                        
+                        <div class="mb-3">
+                            <label for="id_old_password" class="form-label">Текущий пароль</label>
+                            <input type="password" name="old_password" class="form-control" id="id_old_password" placeholder="Введите текущий пароль">
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="id_new_password1" class="form-label">Новый пароль</label>
+                                <input type="password" name="new_password1" class="form-control" id="id_new_password1" placeholder="Введите новый пароль">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_new_password2" class="form-label">Подтверждение пароля</label>
+                                <input type="password" name="new_password2" class="form-control" id="id_new_password2" placeholder="Повторите новый пароль">
+                            </div>
+                        </div>
+                        
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i> Сохранить изменения
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-4">
+                        <i class="fas fa-chart-line me-2 text-primary"></i> Статистика активности
+                    </h5>
+                    <div class="row row-cols-3 text-center">
+                        <div class="col">
+                            <div class="display-4 fw-bold text-primary">{{ content_plans_count }}</div>
+                            <div class="text-secondary">Планов контента</div>
+                        </div>
+                        <div class="col">
+                            <div class="display-4 fw-bold text-success">{{ content_items_count }}</div>
+                            <div class="text-secondary">Элементов контента</div>
+                        </div>
+                        <div class="col">
+                            <div class="display-4 fw-bold text-info">{{ published_items_count }}</div>
+                            <div class="text-secondary">Опубликовано</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

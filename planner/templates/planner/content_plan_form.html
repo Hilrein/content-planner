@@ -1,0 +1,98 @@
+{% extends 'planner/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if is_create %}Создание плана контента{% else %}Редактирование плана контента{% endif %} - Контент Планнер
+{% endblock %}
+
+{% block content %}
+<div class="py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8" data-aos="fade-up" data-aos-duration="800">
+            <div class="card content-card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        {% if is_create %}
+                            <i class="fas fa-plus-circle me-2"></i> Создание нового плана контента
+                        {% else %}
+                            <i class="fas fa-edit me-2"></i> Редактирование плана контента
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <div class="form-icon-wrapper">
+                                {{ form.title|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-icon-wrapper">
+                                {{ form.description|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            {% if is_create %}
+                                <a href="{% url 'content_plan_list' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Отмена
+                                </a>
+                                <button type="submit" class="btn btn-primary shadow-sm">
+                                    <i class="fas fa-save me-2"></i> Создать план
+                                </button>
+                            {% else %}
+                                <a href="{% url 'content_plan_detail' pk=plan.pk %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Назад к плану
+                                </a>
+                                <button type="submit" class="btn btn-primary shadow-sm">
+                                    <i class="fas fa-save me-2"></i> Сохранить изменения
+                                </button>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if not is_create %}
+            <div class="card content-card mt-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-info-circle text-primary me-3 fa-2x"></i>
+                        <h5 class="mb-0">Информация о плане</h5>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-3 h-100">
+                                <div class="small text-secondary">Дата создания</div>
+                                <div>{{ plan.created_at|date:"d.m.Y H:i" }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-3 h-100">
+                                <div class="small text-secondary">Последнее обновление</div>
+                                <div>{{ plan.updated_at|date:"d.m.Y H:i" }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-3 h-100">
+                                <div class="small text-secondary">Элементов контента</div>
+                                <div>{{ plan.content_items.count }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-3 h-100">
+                                <div class="small text-secondary">Владелец</div>
+                                <div>{{ plan.owner.username }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

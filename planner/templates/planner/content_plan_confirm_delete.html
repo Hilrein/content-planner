@@ -1,0 +1,39 @@
+{% extends 'planner/base.html' %}
+
+{% block title %}Удаление плана контента - Контент Планнер{% endblock %}
+
+{% block content %}
+<div class="py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card content-card">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i> Подтверждение удаления
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <h5 class="mb-4">Вы действительно хотите удалить план контента "{{ plan.title }}"?</h5>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-circle me-2"></i> 
+                        Внимание! Это действие приведет к удалению всех элементов контента в этом плане и не может быть отменено.
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'content_plan_detail' pk=plan.pk %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i> Отмена
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-2"></i> Удалить план
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
